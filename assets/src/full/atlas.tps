@@ -6,7 +6,7 @@
         <key>texturePackerVersion</key>
         <string>4.2.3</string>
         <key>fileName</key>
-        <string>/home/theadedmonkey/Envs/flashback/flashback/assets/src/atlas.tps</string>
+        <string>/home/theadedmonkey/Envs/flashback/flashback/assets/src/full/atlas.tps</string>
         <key>autoSDSettings</key>
         <array>
             <struct type="AutoSDSettings">
@@ -36,7 +36,7 @@
         <key>dataFormat</key>
         <string>json-array</string>
         <key>textureFileName</key>
-        <filename>../dst/atlas.png</filename>
+        <filename>../../dst/full/atlas.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>pvrCompressionQuality</key>
@@ -141,7 +141,7 @@
             <key>data</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../dst/atlas.json</filename>
+                <filename>../../dst/full/atlas.json</filename>
             </struct>
         </map>
         <key>multiPack</key>
@@ -188,29 +188,29 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">../dst/idle-0/idle-0-0.png</key>
-            <key type="filename">../dst/step-0/step-0-0.png</key>
-            <key type="filename">../dst/step-0/step-0-1.png</key>
-            <key type="filename">../dst/step-0/step-0-2.png</key>
-            <key type="filename">../dst/step-0/step-0-3.png</key>
-            <key type="filename">../dst/step-0/step-0-4.png</key>
-            <key type="filename">../dst/step-0/step-0-5.png</key>
-            <key type="filename">../dst/step-1/step-1-0.png</key>
-            <key type="filename">../dst/step-1/step-1-1.png</key>
-            <key type="filename">../dst/step-1/step-1-2.png</key>
-            <key type="filename">../dst/step-1/step-1-3.png</key>
-            <key type="filename">../dst/step-1/step-1-4.png</key>
-            <key type="filename">../dst/step-1/step-1-5.png</key>
-            <key type="filename">../dst/turn-0/turn-0-0.png</key>
-            <key type="filename">../dst/turn-0/turn-0-1.png</key>
-            <key type="filename">../dst/turn-0/turn-0-2.png</key>
-            <key type="filename">../dst/turn-0/turn-0-3.png</key>
-            <key type="filename">../dst/turn-0/turn-0-4.png</key>
-            <key type="filename">../dst/turn-0/turn-0-5.png</key>
-            <key type="filename">../dst/turn-0/turn-0-6.png</key>
-            <key type="filename">../dst/turn-0/turn-0-7.png</key>
-            <key type="filename">../dst/turn-0/turn-0-8.png</key>
-            <key type="filename">../dst/turn-0/turn-0-9.png</key>
+            <key type="filename">../../dst/full/idle-0/idle-0-0.png</key>
+            <key type="filename">../../dst/full/step-0/step-0-0.png</key>
+            <key type="filename">../../dst/full/step-0/step-0-1.png</key>
+            <key type="filename">../../dst/full/step-0/step-0-2.png</key>
+            <key type="filename">../../dst/full/step-0/step-0-3.png</key>
+            <key type="filename">../../dst/full/step-0/step-0-4.png</key>
+            <key type="filename">../../dst/full/step-0/step-0-5.png</key>
+            <key type="filename">../../dst/full/step-1/step-1-0.png</key>
+            <key type="filename">../../dst/full/step-1/step-1-1.png</key>
+            <key type="filename">../../dst/full/step-1/step-1-2.png</key>
+            <key type="filename">../../dst/full/step-1/step-1-3.png</key>
+            <key type="filename">../../dst/full/step-1/step-1-4.png</key>
+            <key type="filename">../../dst/full/step-1/step-1-5.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-0.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-1.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-2.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-3.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-4.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-5.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-6.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-7.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-8.png</key>
+            <key type="filename">../../dst/full/turn-0/turn-0-9.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -218,10 +218,10 @@
         </map>
         <key>fileList</key>
         <array>
-            <filename>../dst/idle-0</filename>
-            <filename>../dst/step-0</filename>
-            <filename>../dst/step-1</filename>
-            <filename>../dst/turn-0</filename>
+            <filename>../../dst/full/idle-0</filename>
+            <filename>../../dst/full/step-0</filename>
+            <filename>../../dst/full/turn-0</filename>
+            <filename>../../dst/full/step-1</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
