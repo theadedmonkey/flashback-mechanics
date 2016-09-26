@@ -47,13 +47,11 @@ class Frame(object):
 
 class Animation(object):
 
-    def __init__(self, name, frames, play_before=lambda: None, play_after=lambda: None):
+    def __init__(self, name, frames):
         self.name = name
         self.frames = frames
         self.frame_count = len(self.frames)
         self.frame_last_idx = 0 if self.frame_count == 0 else self.frame_count - 1
-        self.play_before = play_before
-        self.play_after = play_after
 
 class AnimationPlayer(object):
 
@@ -68,13 +66,7 @@ class AnimationPlayer(object):
         self.tick_last = 0
         self.tick_accum = 0
 
-        self.play_before = run_once(self.animation.play_before)
-        self.play_after = run_once(self.animation.play_after)
-
     def update(self):
-
-        self.play_before()
-
         # unblock input while 2 last frames of animation
         if self.frame_idx > self.animation.frame_last_idx - 2:
 	        is_input_blocked = False
@@ -87,7 +79,6 @@ class AnimationPlayer(object):
         if self.tick_accum > self.tick_duration:
             if self.frame_idx == self.animation.frame_last_idx:
                 self.has_finish = True
-                self.play_after()
             else:
                 self.frame_idx += 1
 
@@ -101,9 +92,6 @@ class AnimationPlayer(object):
         self.tick_accum = 0
         is_input_blocked = True
         self.has_finish = False
-
-        self.play_before = run_once(self.animation.play_before)
-        self.play_after = run_once(self.animation.play_after)
 
 # set up pygame
 pygame.init()
@@ -128,55 +116,208 @@ COLOR_RED = (255, 0, 0)
 COLOR_GREEN = (0, 255, 0)
 COLOR_BLUE = (0, 0, 255)
 
-# set up input
-is_input_blocked = False
-
-# set up character
-conrad_x = 8;
-conrad_y = 8;
-conrad_state = 'IDLE'
-conrad_direction = 'RIGHT'
-
-def run_once(f):
-    def wrapper(*args, **kwargs):
-        if not wrapper.has_run:
-            wrapper.has_run = True
-            return f(*args, **kwargs)
-    wrapper.has_run = False
-    return wrapper
-
-def play_before_step():
-    global conrad_x
-    if conrad_direction == 'LEFT':
-        conrad_x -= 2
-        print('called before')
-
-def play_after_step():
-    global conrad_x
-    if conrad_direction == 'RIGHT':
-        conrad_x += 2
-        print('called after')
-
 # set up the window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
 pygame.display.set_caption('Flashback')
-
-#set up the background
-background = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-background.fill(COLOR_WHITE)
 
 # set up the atlas
 atlasSurface = pygame.image.load('assets/dst/full/atlas.png').convert_alpha()
 
 #set up animations
 animations = group_by_animation_name(parse_frame_data())
-animation_next = None
 animation_idle = Animation('idle-0', animations['idle-0'])
-animation_step_0 = Animation('step-0', animations['step-0'], play_before=play_before_step, play_after=play_after_step)
-animation_step_1 = Animation('step-1', animations['step-1'], play_before=play_before_step, play_after=play_after_step)
+animation_step_0 = Animation('step-0', animations['step-0'])
+animation_step_1 = Animation('step-1', animations['step-1'])
 animation_turn = Animation('turn-0', animations['turn-0'])
-animation_current = animation_idle
-animation_player = AnimationPlayer(animation_current)
+animation_fall = Animation('fall-0', animations['fall-0'])
+animation_player = AnimationPlayer(animation_idle)
+
+class StateStanding(object):
+
+    def __init__(self):
+        pass
+
+    def enter(self, conrad):
+        animation_player.set_animation(animation_idle)
+
+    def exit(self, conrad):
+        pass
+
+    def handle_event(self, conrad, event):
+        if not is_input_blocked:
+            if event[K_d]:
+                if conrad.direction == 'RIGHT':
+                    conrad.state = Conrad.state_step_0
+                if conrad.direction == 'LEFT':
+                    conrad.state = Conrad.state_turn
+
+            if event[K_a]:
+                if conrad.direction == 'RIGHT':
+                    conrad.state = Conrad.state_turn
+                if conrad.direction == 'LEFT':
+                    conrad.state = Conrad.state_step_0
+
+            if event[K_s]:
+                conrad.state = Conrad.state_fall
+
+
+    def update(self, conrad):
+        pass
+
+class StateStep0(object):
+
+    def __init__(self):
+        self.__state_next = None
+
+    def enter(self, conrad):
+        animation_player.set_animation(animation_step_0)
+
+        if conrad.direction == 'LEFT':
+            conrad.x -= 2
+
+    def exit(self, conrad):
+        if conrad.direction == 'RIGHT':
+            conrad.x += 2
+
+    def handle_event(self, conrad, event):
+        self.__state_next = Conrad.state_standing
+
+        if not is_input_blocked:
+            if event[K_d]:
+                if conrad.direction == 'RIGHT':
+                    self.__state_next = Conrad.state_step_1
+                if conrad.direction == 'LEFT':
+                    self.__state_next = Conrad.state_turn
+            if event[K_a]:
+                if conrad.direction == 'RIGHT':
+                    self.__state_next = Conrad.state_turn
+                if conrad.direction == 'LEFT':
+                    self.__state_next = Conrad.state_step_1
+
+        if animation_player.has_finish:
+            conrad.state = self.__state_next
+            self.exit(conrad)
+
+    def update(self, conrad):
+        pass
+
+class StateStep1(object):
+
+    def __init__(self):
+        self.__state_next = None
+
+    def enter(self, conrad):
+        animation_player.set_animation(animation_step_1)
+
+        if conrad.direction == 'LEFT':
+            conrad.x -= 2
+
+    def exit(self, conrad):
+        if conrad.direction == 'RIGHT':
+            conrad.x += 2
+
+    def handle_event(self, conrad, event):
+        self.__state_next = Conrad.state_standing
+
+        if not is_input_blocked:
+            if event[K_d]:
+                if conrad.direction == 'RIGHT':
+                    self.__state_next = Conrad.state_step_0
+                if conrad.direction == 'LEFT':
+                    self.__state_next = Conrad.state_turn
+            if event[K_a]:
+                if conrad.direction == 'RIGHT':
+                    self.__state_next = Conrad.state_turn
+                if conrad.direction == 'LEFT':
+                    self.__state_next = Conrad.state_step_0
+
+        if animation_player.has_finish:
+            conrad.state = self.__state_next
+            self.exit(conrad)
+
+    def update(self, conrad):
+        pass
+
+class StateTurn(object):
+
+    def __init__(self):
+        self.__animation_next = None
+
+    def enter(self, conrad):
+        animation_player.set_animation(animation_turn)
+
+    def exit(self, conrad):
+        conrad.direction = 'LEFT' if conrad.direction == 'RIGHT' else 'RIGHT'
+
+    def handle_event(self, conrad, event):
+        if animation_player.has_finish:
+            conrad.state = Conrad.state_standing
+            self.exit(conrad)
+
+    def update(self, conrad):
+        pass
+
+class StateFall(object):
+
+    def __init__(self):
+        pass
+
+    def enter(self, conrad):
+        animation_player.set_animation(animation_fall)
+        if conrad.direction == 'LEFT':
+            conrad.x -= 3
+
+    def exit(self, conrad):
+        if conrad.direction == 'RIGHT':
+            conrad.x += 2
+        if conrad.direction == 'LEFT':
+            conrad.x += 1
+
+        conrad.y += 9
+
+
+    def handle_event(self, conrad, event):
+        if animation_player.has_finish:
+            conrad.state = Conrad.state_standing
+            self.exit(conrad)
+
+    def update(self, conrad):
+        pass
+
+class Conrad(object):
+
+    state_standing = StateStanding()
+    state_step_0 = StateStep0()
+    state_step_1 = StateStep1()
+    state_turn = StateTurn()
+    state_fall = StateFall()
+
+    def __init__(self):
+        self.x = 8
+        self.y = 0
+        self.direction = 'LEFT'
+        self.state = self.state_standing
+
+    @property
+    def state(self):
+        return self.__state
+
+    @state.setter
+    def state(self, state):
+        self.__state = state
+        self.__state.enter(self)
+
+    def handle_event(self, event):
+        self.state.handle_event(self, event)
+
+    def update(self):
+        self.state.update(self)
+
+# set up input
+is_input_blocked = False
+
+# set up character
+conrad = Conrad()
 
 def draw_grid():
     x = 0
@@ -197,8 +338,8 @@ def draw_conrad():
     srcRect = animation_player.frame_current.srcRect
     dstRect = animation_player.frame_current.dstRect
 
-    dstRect.x = TILE_SIZE * conrad_x
-    dstRect.y = TILE_SIZE * conrad_y
+    dstRect.x = TILE_SIZE * conrad.x
+    dstRect.y = TILE_SIZE * conrad.y
 
     sur = pygame.Surface(srcRect.size).convert()
     sur.blit(atlasSurface, (0, 0), srcRect)
@@ -206,7 +347,7 @@ def draw_conrad():
     sur.set_colorkey(color_key, pygame.RLEACCEL)
 
     a = sur
-    if conrad_direction == 'LEFT':
+    if conrad.direction == 'LEFT':
         a = pygame.transform.flip(sur, True, False)
 
     # draw borders
@@ -232,42 +373,10 @@ while True:
             sys.exit()
 
     keys = pygame.key.get_pressed()
-    if not is_input_blocked:
-        if keys[K_d]:
-            if animation_player.animation.name == 'idle-0' and conrad_direction == 'RIGHT':
-                animation_next = animation_step_0
-            if animation_player.animation.name == 'step-0' and conrad_direction == 'RIGHT':
-                animation_next = animation_step_1
-            if animation_player.animation.name == 'step-1' and conrad_direction == 'RIGHT':
-                animation_next = animation_step_0
-            if animation_player.animation.name == 'idle-0' and conrad_direction == 'LEFT':
-                 animation_next = animation_turn
-        if keys[K_a]:
-            if animation_player.animation.name == 'idle-0' and conrad_direction == 'LEFT':
-                animation_next = animation_step_0
-            if animation_player.animation.name == 'step-0' and conrad_direction == 'LEFT':
-                animation_next = animation_step_1
-            if animation_player.animation.name == 'step-1' and conrad_direction == 'LEFT':
-                animation_next = animation_step_0
-            if animation_player.animation.name == 'idle-0' and conrad_direction == 'RIGHT':
-                animation_next = animation_turn
-
-    if animation_player.has_finish:
-        if animation_player.animation.name == 'step-0' or animation_player.animation.name == 'step-1':
-            pass
-            # if conrad_direction == 'RIGHT':
-            #    conrad_x += 2
-            # if conrad_direction == 'LEFT':
-            #    conrad_x -= 2
-        if animation_player.animation.name == 'turn-0':
-            if conrad_direction == 'RIGHT':
-                conrad_direction = 'LEFT'
-            else:
-                conrad_direction = 'RIGHT'
-        if animation_player.animation.name != animation_next.name:
-            animation_player.set_animation(animation_next)
 
 
+    conrad.handle_event(keys)
+    conrad.update()
     animation_player.update()
 
     screen.fill(COLOR_WHITE)

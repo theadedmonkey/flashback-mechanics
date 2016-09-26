@@ -188,6 +188,16 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">../../dst/full/fall-0/fall-0-0.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-1.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-2.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-3.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-4.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-5.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-6.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-7.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-8.png</key>
+            <key type="filename">../../dst/full/fall-0/fall-0-9.png</key>
             <key type="filename">../../dst/full/idle-0/idle-0-0.png</key>
             <key type="filename">../../dst/full/step-0/step-0-0.png</key>
             <key type="filename">../../dst/full/step-0/step-0-1.png</key>
@@ -222,6 +232,7 @@
             <filename>../../dst/full/step-0</filename>
             <filename>../../dst/full/turn-0</filename>
             <filename>../../dst/full/step-1</filename>
+            <filename>../../dst/full/fall-0</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>
